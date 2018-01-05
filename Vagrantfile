@@ -51,13 +51,14 @@ Vagrant.configure("2") do |config|
   #
    config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
-     vb.gui = true
+  #   vb.gui = true
   #
   #   # Customize the amount of memory on the VM:
      vb.memory = "4096"
      vb.customize ["modifyvm", :id, "--vram", "256"]
-  #   vb.customize ['modifyvm', :id, '--usb', 'on']
-  #   vb.customize ['usbfilter', 'add', '0', '--target', :id, '--name', 'edimax7718un', '--vendorid', '0x7392']
+     vb.customize ['modifyvm', :id, '--usb', 'on']
+     vb.customize ["modifyvm", :id, "--usbxhci", "on"]
+     vb.customize ['usbfilter', 'add', '0', '--target', :id, '--name', 'Movidius MA2X5X [0001]', '--vendorid', '03E7']
    end
   #
   # View the documentation for the provider you are using for more
@@ -69,12 +70,11 @@ Vagrant.configure("2") do |config|
    config.vm.provision "shell", inline: <<-SHELL
      apt-get update
      apt-get git
-  #   apt-get install -y apache2
-  #   mkdir -p ~/workspace
-    cd ~/workspace
     git clone https://github.com/movidius/ncsdk.git
-  #  cd ~/workspace/ncsdk
+    git clone https://github.com/movidius/ncappzoo.git
+  #  cd ~/ncsdk
   #  make install
+  #  source ~/.bashrc
   #  make examples
    SHELL
 end
