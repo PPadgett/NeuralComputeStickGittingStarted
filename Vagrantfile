@@ -70,11 +70,11 @@ Vagrant.configure("2") do |config|
    config.vm.provision "shell", inline: <<-SHELL
      apt-get update
      apt-get git
-    git clone https://github.com/movidius/ncsdk.git
-    git clone https://github.com/movidius/ncappzoo.git
-  #  cd ~/ncsdk
-  #  make install
-  #  source ~/.bashrc
-  #  make examples
+     git clone https://github.com/movidius/ncsdk.git
+     git clone https://github.com/movidius/ncappzoo.git
+     cd ~/ncsdk
+     make install
+     source ~/.bashrc
+     make examples
    SHELL
 end
