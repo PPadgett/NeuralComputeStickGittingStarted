@@ -51,14 +51,15 @@ Vagrant.configure("2") do |config|
   #
    config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
-     vb.gui = true
+  #   vb.gui = true
   #
-  #   # Customize the amount of memory on the VM:
+  #   # Customize the amount of memory on the VM to work with Neural Compute Stick:
      vb.memory = "4096"
      vb.customize ["modifyvm", :id, "--vram", "256"]
      vb.customize ['modifyvm', :id, '--usb', 'on']
      vb.customize ["modifyvm", :id, "--usbxhci", "on"]
      vb.customize ['usbfilter', 'add', '0', '--target', :id, '--name', 'Movidius MA2X5X [0001]', '--vendorid', '03E7']
+     vb.customize ['usbfilter', 'add', '1', '--target', :id, '--name', 'Movidius VSC Loopback Device [0001]', '--vendorid', '03E7']
    end
   #
   # View the documentation for the provider you are using for more
@@ -68,12 +69,15 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
-     apt-get update
-     git clone https://github.com/movidius/ncsdk.git
-     git clone https://github.com/movidius/ncappzoo.git
-     cd ~/ncsdk
-     sudo -H make install
-     source ~/.bashrc
-     sudo -H make examples
+    # apt-get update  ### Updates System ###
+    # apt-get --yes --force-yes install lubuntu-desktop  ### Suggested GUI if you need to Test your modele while using a GUI  ###
+    # apt-get --yes --force-yes install eog  ###  Suggested Simple Picture Veiw Requires GUI ###
+     git clone https://github.com/movidius/ncsdk.git  ### Clones Latest Movidius NCS Code ###
+    # git clone https://github.com/movidius/ncappzoo.git ### Clones Latest Community Apps ###
+     cd /home/vagrant/ncsdk  ### Change Current Working Directory  ###
+     sudo -H make install   ### Install NCS Software/API  ###
+     export PYTHONPATH=$env:"/opt/movidius/caffe/python":$PYTHONPATH  ###Updates Python Path to Movidius Standards  ###
+     sudo -H make examples  ###  Installs all Examples  ###
+     python3 '/home/vagrant/ncsdk/examples/apps/hello_ncs_py/hello_ncs.py'  ### Execute Python Test Script to Verify USB NCStick is attached correctly ###
    SHELL
 end
